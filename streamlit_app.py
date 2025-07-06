@@ -52,18 +52,18 @@ theta = Theta()
 vega = Vega()
 rho = Rho()
 
-# Greeks for Call Option
+
 call_delta = delta.evaluate(call_option)
 call_theta = theta.evaluate(call_option) / 365
 call_rho = rho.evaluate(call_option)
 
-# Greeks for Put Option
+
 put_delta = delta.evaluate(put_option)
 put_theta = theta.evaluate(put_option) / 365
 put_rho = rho.evaluate(put_option)
 
-# Shared Greeks (same for Call and Put)
-gamma_val = gamma.evaluate(call_option)  # or put_option — both give the same result
+
+gamma_val = gamma.evaluate(call_option)
 vega_val = vega.evaluate(call_option)
 
 
@@ -72,7 +72,6 @@ st.markdown("### Option Prices and Greeks")
 col1, col2 = st.columns(2)
 
 with col1:
-    # Call Option Price
     st.markdown(
         f"""
         <div style="background-color:#dbeeff;padding:20px;border-radius:10px;
@@ -85,7 +84,6 @@ with col1:
     )
 
 with col2:
-    # Put Option Price
     st.markdown(
         f"""
         <div style="background-color:#ffe5e5;padding:20px;border-radius:10px;
@@ -102,7 +100,6 @@ st.markdown("### Greeks")
 col3, col4 = st.columns(2)
 
 with col3:
-    # Call Delta
     st.markdown(
         f"""
         <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
@@ -115,7 +112,6 @@ with col3:
     )
     st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
 
-    # Call Theta
     st.markdown(
         f"""
         <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
@@ -128,7 +124,7 @@ with col3:
     )
     st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
 
-    # Call Rho
+
     st.markdown(
         f"""
         <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
@@ -141,7 +137,7 @@ with col3:
     )
 
 with col4:
-    # Put Delta
+
     st.markdown(
         f"""
         <div style="background-color:#fbecec;padding:20px;border-radius:10px;
@@ -154,7 +150,6 @@ with col4:
     )
     st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
 
-    # Put Theta
     st.markdown(
         f"""
         <div style="background-color:#fbecec;padding:20px;border-radius:10px;
@@ -167,7 +162,6 @@ with col4:
     )
     st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
 
-    # Put Rho
     st.markdown(
         f"""
         <div style="background-color:#fbecec;padding:20px;border-radius:10px;
@@ -180,9 +174,6 @@ with col4:
     )
 
 
-
-# Shared Greeks Box
-# Gamma
 st.markdown(
     f"""
     <div style="background-color:#f3f3f3;padding:20px;border-radius:10px;
@@ -195,10 +186,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Spacing between blocks
 st.markdown("<div style='margin-top:8px;'></div>", unsafe_allow_html=True)
 
-# Vega
+
 st.markdown(
     f"""
     <div style="background-color:#f3f3f3;padding:20px;border-radius:10px;
