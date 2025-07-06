@@ -96,7 +96,7 @@ Z = np.zeros((len(V_vals), len(K_vals)))
 
 option_type_enum = option_pricing.OptionType.Call if plot_type == "Call" else option_pricing.OptionType.Put
 purchase_price = st.number_input(
-    "Option Purchase Price", value=2.50, format="%.4f"
+    "Option Purchase Price", value=0.0, format="%.4f"
 )
 for i, sigma_val in enumerate(V_vals):
     for j, K_val in enumerate(K_vals):
@@ -138,7 +138,18 @@ surface = go.Surface(
 )
 
 fig = go.Figure(data=[surface])
-fig.update_layout(
+if (purchase_price == 0):
+    fig.update_layout(
+    title=f"{plot_type} Option Price Surface vs Strike & Volatility ({model_type})",
+    scene=dict(
+        xaxis_title="Strike Price (K)",
+        yaxis_title="Volatility (σ)",
+        zaxis_title="Profit / Loss ($)"
+    ),
+    height=600
+    )
+else:
+    fig.update_layout(
     title=f"{plot_type} P&L Surface vs Strike & Volatility ({model_type})",
     scene=dict(
         xaxis_title="Strike Price (K)",
@@ -146,6 +157,8 @@ fig.update_layout(
         zaxis_title="Profit / Loss ($)"
     ),
     height=600
-)
+    )
+
+
 
 st.plotly_chart(fig, use_container_width=True)
