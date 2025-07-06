@@ -96,7 +96,7 @@ Z = np.zeros((len(V_vals), len(K_vals)))
 
 option_type_enum = option_pricing.OptionType.Call if plot_type == "Call" else option_pricing.OptionType.Put
 purchase_price = st.number_input(
-    "Option Purchase Price", value=0.0, format="%.4f"
+    "Option Purchase Price (Keep at 0.0 for Option Price Surface, change for P&L Surface)", value=0.0, format="%.4f"
 )
 for i, sigma_val in enumerate(V_vals):
     for j, K_val in enumerate(K_vals):
