@@ -10,7 +10,7 @@ st.title("📊 European Option Pricer")
 st.markdown("This app calculates the price of a European option using one of three models: "
             "**Black-Scholes**, **Monte Carlo**, or **Binomial Tree**.")
 
-# --- Layout inputs in two columns ---
+
 col1, col2 = st.columns(2)
 with col1:
     S = st.number_input("Spot Price ($S$)", value=100.0)
@@ -21,21 +21,20 @@ with col2:
     r = st.number_input("Risk-Free Rate ($r$)", value=0.05, format="%.4f")
     sigma = st.number_input("Volatility ($\\sigma$)", value=0.2, format="%.4f")
 
-# --- Pricing model selection ---
+
 model_type = st.selectbox("Pricing Model", ["Black-Scholes", "Monte Carlo", "Binomial Tree"])
 
-# --- Advanced settings ---
+
 with st.expander("⚙️ Advanced Settings"):
     if model_type == "Monte Carlo":
         N = st.slider("Number of Simulations", 1000, 100000, 10000, step=1000)
     elif model_type == "Binomial Tree":
         N = st.slider("Number of Time Steps", 10, 1000, 500, step=10)
 
-# --- Create both Call and Put options ---
 call_option = option_pricing.EuropeanOption(S, K, T, r, sigma, option_pricing.OptionType.Call)
 put_option = option_pricing.EuropeanOption(S, K, T, r, sigma, option_pricing.OptionType.Put)
 
-# --- Pricing logic ---
+
 if model_type == "Black-Scholes":
     model = option_pricing.BlackScholesModel()
 elif model_type == "Monte Carlo":
@@ -46,7 +45,7 @@ elif model_type == "Binomial Tree":
 call_price = model.price(call_option)
 put_price = model.price(put_option)
 
-# --- Output ---
+
 st.markdown("### 💰 Option Prices")
 
 col1, col2 = st.columns(2)
@@ -76,12 +75,12 @@ with col2:
     )
 
     st.markdown("---")
-st.markdown("### 🌐 Option Price Surface")
+st.markdown("### Option Price Surface")
 
 plot_type = st.selectbox("Select Option Type for Surface", ["Call", "Put"], key="surface_option_type")
 
-# Create a grid of Strike (K) and Maturity (T)
-st.markdown("### 🎛️ Surface Axes: Strike vs Volatility")
+
+st.markdown("### Surface Axes: Strike vs Volatility")
 
 strike_min = st.number_input("Lower Strike Bound", value=K * 0.5)
 strike_max = st.number_input("Upper Strike Bound", value=K * 1.5)
@@ -116,7 +115,7 @@ for i, sigma_val in enumerate(V_vals):
             Z[i, j] = np.nan
 
 
-# Clean up Z
+
 Z = np.nan_to_num(Z, nan=0.0)
 
 cmin = np.min(Z)
