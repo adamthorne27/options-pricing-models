@@ -1,5 +1,6 @@
 import streamlit as st
 import option_pricing
+from option_pricing import Delta, Gamma, Theta, Vega, Rho
 import numpy as np
 import plotly.graph_objects as go
 
@@ -25,7 +26,7 @@ with col2:
 model_type = st.selectbox("Pricing Model", ["Black-Scholes", "Monte Carlo", "Binomial Tree"])
 
 
-with st.expander("⚙️ Advanced Settings"):
+with st.expander("Advanced Settings"):
     if model_type == "Monte Carlo":
         N = st.slider("Number of Simulations", 1000, 100000, 10000, step=1000)
     elif model_type == "Binomial Tree":
@@ -45,12 +46,33 @@ elif model_type == "Binomial Tree":
 call_price = model.price(call_option)
 put_price = model.price(put_option)
 
+delta = Delta()
+gamma = Gamma()
+theta = Theta()
+vega = Vega()
+rho = Rho()
 
-st.markdown("### 💰 Option Prices")
+# Greeks for Call Option
+call_delta = delta.evaluate(call_option)
+call_theta = theta.evaluate(call_option) / 365
+call_rho = rho.evaluate(call_option)
+
+# Greeks for Put Option
+put_delta = delta.evaluate(put_option)
+put_theta = theta.evaluate(put_option) / 365
+put_rho = rho.evaluate(put_option)
+
+# Shared Greeks (same for Call and Put)
+gamma_val = gamma.evaluate(call_option)  # or put_option — both give the same result
+vega_val = vega.evaluate(call_option)
+
+
+st.markdown("### Option Prices and Greeks")
 
 col1, col2 = st.columns(2)
 
 with col1:
+    # Call Option Price
     st.markdown(
         f"""
         <div style="background-color:#dbeeff;padding:20px;border-radius:10px;
@@ -63,6 +85,7 @@ with col1:
     )
 
 with col2:
+    # Put Option Price
     st.markdown(
         f"""
         <div style="background-color:#ffe5e5;padding:20px;border-radius:10px;
@@ -74,7 +97,122 @@ with col2:
         unsafe_allow_html=True
     )
 
-    st.markdown("---")
+st.markdown("### Greeks")
+
+col3, col4 = st.columns(2)
+
+with col3:
+    # Call Delta
+    st.markdown(
+        f"""
+        <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
+                    border-left:6px solid #1f77b4;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">Δ Delta</h4>
+            <h2 style="margin:0;font-weight:bold;">{call_delta:.4f}</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
+
+    # Call Theta
+    st.markdown(
+        f"""
+        <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
+                    border-left:6px solid #1f77b4;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">Θ Theta</h4>
+            <h2 style="margin:0;font-weight:bold;">{call_theta:.4f} $/day</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
+
+    # Call Rho
+    st.markdown(
+        f"""
+        <div style="background-color:#e6f3ff;padding:20px;border-radius:10px;
+                    border-left:6px solid #1f77b4;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">ρ Rho</h4>
+            <h2 style="margin:0;font-weight:bold;">{call_rho:.4f} $/%</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col4:
+    # Put Delta
+    st.markdown(
+        f"""
+        <div style="background-color:#fbecec;padding:20px;border-radius:10px;
+                    border-left:6px solid #d62728;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">Δ Delta</h4>
+            <h2 style="margin:0;font-weight:bold;">{put_delta:.4f}</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
+
+    # Put Theta
+    st.markdown(
+        f"""
+        <div style="background-color:#fbecec;padding:20px;border-radius:10px;
+                    border-left:6px solid #d62728;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">Θ Theta</h4>
+            <h2 style="margin:0;font-weight:bold;">{put_theta:.4f} $/day</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown("<div style='margin-top:15px;'></div>", unsafe_allow_html=True)
+
+    # Put Rho
+    st.markdown(
+        f"""
+        <div style="background-color:#fbecec;padding:20px;border-radius:10px;
+                    border-left:6px solid #d62728;color:#000000;">
+            <h4 style="margin:0;font-weight:bold;">ρ Rho</h4>
+            <h2 style="margin:0;font-weight:bold;">{put_rho:.4f} $/%</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
+# Shared Greeks Box
+# Gamma
+st.markdown(
+    f"""
+    <div style="background-color:#f3f3f3;padding:20px;border-radius:10px;
+                border-left:6px solid #888888;margin-top:20px;color:#000000;
+                text-align:center;">
+        <h4 style="margin:0;font-weight:bold;font-weight:bold;">Γ Gamma</h4>
+        <h2 style="margin:0;font-weight:bold;">{gamma_val:.4f}</h2>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Spacing between blocks
+st.markdown("<div style='margin-top:8px;'></div>", unsafe_allow_html=True)
+
+# Vega
+st.markdown(
+    f"""
+    <div style="background-color:#f3f3f3;padding:20px;border-radius:10px;
+                border-left:6px solid #888888;margin-top:0px;color:#000000;
+                text-align:center;">
+        <h4 style="margin:0;font-weight:bold;font-weight:bold;">Vega</h4>
+        <h2 style="margin:0;font-weight:bold;">{vega_val:.4f} $/%</h2>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+st.markdown("---")
 st.markdown("### Option Price Surface")
 
 plot_type = st.selectbox("Select Option Type for Surface", ["Call", "Put"], key="surface_option_type")

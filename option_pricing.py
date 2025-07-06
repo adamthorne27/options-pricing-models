@@ -63,3 +63,48 @@ class BinomialModel:
             values = [discount * (p * values[j + 1] + (1 - p) * values[j]) for j in range(i + 1)]
 
         return values[0]
+
+class Delta:
+    def evaluate(self, option):
+        S, K, T, r, sigma = option.S, option.K, option.T, option.r, option.sigma
+        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        if option.option_type == OptionType.Call:
+            return norm.cdf(d1)
+        else:
+            return norm.cdf(d1) - 1
+
+class Gamma:
+    def evaluate(self, option):
+        S, K, T, r, sigma = option.S, option.K, option.T, option.r, option.sigma
+        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        return norm.pdf(d1) / (S * sigma * math.sqrt(T))  
+
+class Theta:
+    def evaluate(self, option):
+        S, K, T, r, sigma = option.S, option.K, option.T, option.r, option.sigma
+        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        d2 = d1 - sigma * math.sqrt(T)
+
+        first_term = - (S * norm.pdf(d1) * sigma) / (2 * math.sqrt(T))
+
+        if option.option_type == OptionType.Call:
+            return first_term - r * K * math.exp(-r * T) * norm.cdf(d2)
+        else:
+            return first_term + r * K * math.exp(-r * T) * norm.cdf(-d2)
+
+class Vega:
+    def evaluate(self, option):
+        S, K, T, r, sigma = option.S, option.K, option.T, option.r, option.sigma
+        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        return S * norm.pdf(d1) * math.sqrt(T) / 100  
+
+class Rho:
+    def evaluate(self, option):
+        S, K, T, r, sigma = option.S, option.K, option.T, option.r, option.sigma
+        d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * math.sqrt(T))
+        d2 = d1 - sigma * math.sqrt(T)
+
+        if option.option_type == OptionType.Call:
+            return K * T * math.exp(-r * T) * norm.cdf(d2) / 100  
+        else:
+            return -K * T * math.exp(-r * T) * norm.cdf(-d2) / 100
